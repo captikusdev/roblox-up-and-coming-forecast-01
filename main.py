@@ -59,6 +59,7 @@ def main():
         place_sums[place] = place_sums.get(place, 0.0) + p
         
     probabilities = []
+    final_place_sums = {}
     for (universe_id, place), p in probs_map.items():
         sum_p = place_sums[place]
         if sum_p > 0.97:
@@ -68,6 +69,12 @@ def main():
             "place": place,
             "p": round(p, 6) # Rounding for deterministic and clean output
         })
+        final_place_sums[place] = final_place_sums.get(place, 0.0) + p
+
+    # Guard: raise if any place probability sum exceeds 1.0
+    for place, total in final_place_sums.items():
+        if total > 1.0:
+            raise ValueError(f"Place {place} probability sum {total} exceeds 1.0")
         
     forecast = {
         "probabilities": probabilities,
