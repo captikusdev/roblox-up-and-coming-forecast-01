@@ -1,4 +1,5 @@
 import json
+import math
 import os
 import sys
 
@@ -70,6 +71,11 @@ def main():
             "p": round(p, 6) # Rounding for deterministic and clean output
         })
         final_place_sums[place] = final_place_sums.get(place, 0.0) + p
+
+    # Guard: each p must be finite and in [0, 1]
+    for entry in probabilities:
+        if not (math.isfinite(entry['p']) and 0.0 <= entry['p'] <= 1.0):
+            raise ValueError(f"Invalid probability {entry['p']} for game {entry['universe_id']}")
 
     # Guard: raise if any place probability sum exceeds 1.0
     for place, total in final_place_sums.items():
