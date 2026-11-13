@@ -32,6 +32,7 @@ def main():
     
     # Spec: for each game g at place k in the LAST chart only:
     # p(g,k) += 0.30; p(g,k-1) += 0.12; p(g,k+1) += 0.12 (in-range only)
+    # p(g,k-2) += 0.05; p(g,k+2) += 0.05 (in-range only)
     # places are 1-indexed 1..10
     
     # probabilities: list of {"universe_id": int, "place": 1..10, "p": number}
@@ -45,13 +46,17 @@ def main():
         # Current place
         probs_map[(universe_id, k)] = probs_map.get((universe_id, k), 0.0) + 0.30
         
-        # Previous place (if in range 1..10)
+        # Neighbors (k-1, k+1)
         if k - 1 >= 1:
             probs_map[(universe_id, k - 1)] = probs_map.get((universe_id, k - 1), 0.0) + 0.12
-            
-        # Next place (if in range 1..10)
         if k + 1 <= 10:
             probs_map[(universe_id, k + 1)] = probs_map.get((universe_id, k + 1), 0.0) + 0.12
+
+        # Second-neighbors (k-2, k+2)
+        if k - 2 >= 1:
+            probs_map[(universe_id, k - 2)] = probs_map.get((universe_id, k - 2), 0.0) + 0.05
+        if k + 2 <= 10:
+            probs_map[(universe_id, k + 2)] = probs_map.get((universe_id, k + 2), 0.0) + 0.05
             
     # Afterwards, if a place sums above 0.97 scale that place down to 0.97.
     # Group by place
